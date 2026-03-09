@@ -8,7 +8,7 @@ export default function ConsolePage({ services, groups, start, stop }) {
   const ungrouped = services.filter((s) => !groups.some((g) => g.id === s.group))
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {grouped.map(
         (g) =>
           g.items.length > 0 && (
@@ -45,15 +45,22 @@ export default function ConsolePage({ services, groups, start, stop }) {
 
 function ServiceTable({ services, onStart, onStop }) {
   return (
-    <div className="rounded-xl border border-border overflow-hidden">
-      <table className="w-full table-auto">
+    <div className="rounded-xl border border-border overflow-hidden bg-surface-1/30">
+      <table className="w-full table-fixed">
+        <colgroup>
+          <col className="w-[52px]" />
+          <col className="w-[20%]" />
+          <col className="w-[14%]" />
+          <col />
+          <col className="w-[200px]" />
+        </colgroup>
         <thead>
-          <tr className="bg-surface-1/60 border-b border-border text-[11px] font-medium text-slate-500 uppercase tracking-wider">
-            <th className="pl-4 pr-2 py-2.5 text-left w-10">状态</th>
-            <th className="px-3 py-2.5 text-left">服务名称</th>
-            <th className="px-3 py-2.5 text-left">端口</th>
-            <th className="px-3 py-2.5 text-left">命令</th>
-            <th className="px-3 py-2.5 text-right">操作</th>
+          <tr className="bg-surface-2/50 border-b border-border">
+            <th className="py-2.5 text-center text-[10px] font-medium text-slate-600 uppercase tracking-wider"></th>
+            <th className="py-2.5 px-4 text-left text-[10px] font-medium text-slate-600 uppercase tracking-wider">服务</th>
+            <th className="py-2.5 px-4 text-left text-[10px] font-medium text-slate-600 uppercase tracking-wider">端口</th>
+            <th className="py-2.5 px-4 text-left text-[10px] font-medium text-slate-600 uppercase tracking-wider">命令</th>
+            <th className="py-2.5 px-4 text-right text-[10px] font-medium text-slate-600 uppercase tracking-wider">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -67,15 +74,25 @@ function ServiceTable({ services, onStart, onStop }) {
 }
 
 function GroupHeader({ name, count, running }) {
+  const stopped = count - running
   return (
-    <div className="flex items-center gap-3 mb-4">
-      <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{name}</h2>
-      <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" />
-      <span className="text-[11px] text-slate-600">
-        {running > 0 && <span className="text-emerald-500">{running} running</span>}
-        {running > 0 && running < count && <span className="mx-1">/</span>}
-        {running < count && <span>{count - running} stopped</span>}
-      </span>
+    <div className="flex items-center gap-3 mb-3 px-1">
+      <h2 className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest">{name}</h2>
+      <div className="flex-1 h-px bg-gradient-to-r from-border/60 to-transparent" />
+      <div className="flex items-center gap-2 text-[10px]">
+        {running > 0 && (
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="text-emerald-500">{running}</span>
+          </span>
+        )}
+        {stopped > 0 && (
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+            <span className="text-slate-600">{stopped}</span>
+          </span>
+        )}
+      </div>
     </div>
   )
 }
