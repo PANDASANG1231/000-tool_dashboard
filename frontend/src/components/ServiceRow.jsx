@@ -64,7 +64,7 @@ export default function ServiceRow({ service, onStart, onStop }) {
 
         {/* Actions */}
         <td className="py-3 px-4">
-          <div className="flex items-center justify-end gap-1">
+          <div className="flex items-center gap-1 whitespace-nowrap">
             {running ? (
               <button
                 onClick={() => onStop(service.id)}

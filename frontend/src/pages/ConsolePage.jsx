@@ -48,11 +48,11 @@ function ServiceTable({ services, onStart, onStop }) {
     <div className="rounded-xl border border-border overflow-hidden bg-surface-1/30">
       <table className="w-full table-fixed">
         <colgroup>
-          <col className="w-[52px]" />
-          <col className="w-[20%]" />
-          <col className="w-[14%]" />
+          <col className="w-[40px]" />
+          <col className="w-[18%]" />
+          <col className="w-[10%]" />
           <col />
-          <col className="w-[200px]" />
+          <col className="w-[260px]" />
         </colgroup>
         <thead>
           <tr className="bg-surface-2/50 border-b border-border">
