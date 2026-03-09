@@ -1,0 +1,49 @@
+{
+  "groups": [
+    { "id": "mcp", "name": "MCP 服务" },
+    { "id": "docker", "name": "Docker 容器" },
+    { "id": "local", "name": "本地工具" }
+  ],
+  "services": [
+    {
+      "id": "n8n",
+      "name": "n8n",
+      "group": "docker",
+      "command": "docker compose up",
+      "workDir": "/Users/pandasang/Desktop/docker_services/n8n",
+      "env": {},
+      "port": 5678,
+      "frontendUrl": "http://localhost:5678"
+    },
+    {
+      "id": "n8n-mcp-claude",
+      "name": "n8n MCP Claude",
+      "group": "docker",
+      "command": "docker compose up",
+      "workDir": "/Users/pandasang/Desktop/docker_services/n8n-mcp-claude",
+      "env": {},
+      "port": 3000,
+      "frontendUrl": null
+    },
+    {
+      "id": "video-transcriptor",
+      "name": "Video Transcriptor",
+      "group": "local",
+      "command": "which ffmpeg || /opt/homebrew/bin/brew install ffmpeg && .venv/bin/pip install -q -r requirements.txt && .venv/bin/streamlit run app.py --server.headless true",
+      "workDir": "/Users/pandasang/Desktop/toolkit/20260303_vedio_transcrip_text",
+      "env": {},
+      "port": 8501,
+      "frontendUrl": "http://localhost:8501"
+    },
+    {
+      "id": "xhs-mcp",
+      "name": "小红书 MCP",
+      "group": "local",
+      "command": "./xiaohongshu-mcp-darwin-arm64",
+      "workDir": "/Users/pandasang/Desktop/toolkit/xhs",
+      "env": {},
+      "port": null,
+      "frontendUrl": null
+    }
+  ]
+}

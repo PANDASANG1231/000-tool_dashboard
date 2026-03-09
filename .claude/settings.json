@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export PATH=\"/usr/local/bin:/usr/bin:/bin:$PATH\")",
+      "Bash(npm install)",
+      "Bash(npm install react-router-dom)",
+      "Bash(npm install -D tailwindcss @tailwindcss/vite)",
+      "Bash(npm install express ws cors)",
+      "Bash(npx vite build)",
+      "Bash(/bin/sleep 2)",
+      "Bash(/bin/cat /private/tmp/claude-503/-Users-pandasang-Desktop-workspace-000-tool-dashboard/tasks/b5uas0bx3.output)",
+      "Bash(export PATH=\"/usr/local/bin:$PATH\")",
+      "Bash(npx vite --port 5173)"
+    ]
+  }
+}
