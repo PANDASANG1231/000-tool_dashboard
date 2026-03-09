@@ -1,4 +1,4 @@
-import ServiceCard from '../components/ServiceCard'
+import ServiceRow from '../components/ServiceRow'
 
 export default function ConsolePage({ services, groups, start, stop }) {
   const grouped = groups.map((g) => ({
@@ -14,11 +14,7 @@ export default function ConsolePage({ services, groups, start, stop }) {
           g.items.length > 0 && (
             <section key={g.id}>
               <GroupHeader name={g.name} count={g.items.length} running={g.items.filter(s => s.status === 'running').length} />
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {g.items.map((svc) => (
-                  <ServiceCard key={svc.id} service={svc} onStart={start} onStop={stop} />
-                ))}
-              </div>
+              <ServiceTable services={g.items} onStart={start} onStop={stop} />
             </section>
           )
       )}
@@ -26,11 +22,7 @@ export default function ConsolePage({ services, groups, start, stop }) {
       {ungrouped.length > 0 && (
         <section>
           <GroupHeader name="未分组" count={ungrouped.length} running={ungrouped.filter(s => s.status === 'running').length} />
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {ungrouped.map((svc) => (
-              <ServiceCard key={svc.id} service={svc} onStart={start} onStop={stop} />
-            ))}
-          </div>
+          <ServiceTable services={ungrouped} onStart={start} onStop={stop} />
         </section>
       )}
 
@@ -47,6 +39,29 @@ export default function ConsolePage({ services, groups, start, stop }) {
           <p className="text-slate-600 text-xs">去「配置」页面添加你的第一个服务吧</p>
         </div>
       )}
+    </div>
+  )
+}
+
+function ServiceTable({ services, onStart, onStop }) {
+  return (
+    <div className="rounded-xl border border-border overflow-hidden">
+      <table className="w-full table-auto">
+        <thead>
+          <tr className="bg-surface-1/60 border-b border-border text-[11px] font-medium text-slate-500 uppercase tracking-wider">
+            <th className="pl-4 pr-2 py-2.5 text-left w-10">状态</th>
+            <th className="px-3 py-2.5 text-left">服务名称</th>
+            <th className="px-3 py-2.5 text-left">端口</th>
+            <th className="px-3 py-2.5 text-left">命令</th>
+            <th className="px-3 py-2.5 text-right">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {services.map((svc) => (
+            <ServiceRow key={svc.id} service={svc} onStart={onStart} onStop={onStop} />
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }
