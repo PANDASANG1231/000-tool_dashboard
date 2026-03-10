@@ -68,7 +68,7 @@ export default function ServiceRow({ service, onStart, onStop }) {
             {running ? (
               <button
                 onClick={() => onStop(service.id)}
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-md transition-all cursor-pointer"
+                className="flex items-center justify-center gap-1 w-[60px] py-1 text-[11px] font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-md transition-all cursor-pointer"
               >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1" /></svg>
                 停止
@@ -76,7 +76,7 @@ export default function ServiceRow({ service, onStart, onStop }) {
             ) : starting ? (
               <button
                 disabled
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium bg-amber-500/10 text-amber-400/70 rounded-md cursor-not-allowed"
+                className="flex items-center justify-center gap-1 w-[60px] py-1 text-[11px] font-medium bg-amber-500/10 text-amber-400/70 rounded-md cursor-not-allowed"
               >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin"><circle cx="12" cy="12" r="10" strokeDasharray="31.4 31.4" /></svg>
                 启动中
@@ -84,7 +84,7 @@ export default function ServiceRow({ service, onStart, onStop }) {
             ) : (
               <button
                 onClick={() => onStart(service.id)}
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-md transition-all cursor-pointer"
+                className="flex items-center justify-center gap-1 w-[60px] py-1 text-[11px] font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-md transition-all cursor-pointer"
               >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                 启动
@@ -96,7 +96,7 @@ export default function ServiceRow({ service, onStart, onStop }) {
                 href={service.frontendUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-md transition-all"
+                className="flex items-center justify-center gap-1 w-[60px] py-1 text-[11px] font-medium bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-md transition-all"
               >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -109,7 +109,7 @@ export default function ServiceRow({ service, onStart, onStop }) {
 
             <button
               onClick={() => setShowLogs(!showLogs)}
-              className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-md transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 w-[60px] py-1 text-[11px] font-medium rounded-md transition-all cursor-pointer ${
                 showLogs
                   ? 'bg-slate-500/15 text-slate-300'
                   : 'text-slate-600 hover:text-slate-400 hover:bg-surface-2/60'
