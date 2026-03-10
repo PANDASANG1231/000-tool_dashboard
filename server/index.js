@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { createServer } from 'http'
 import { WebSocketServer } from 'ws'
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { spawn, execSync } from 'child_process'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
@@ -265,6 +265,15 @@ function stopProcess(id, svc) {
       if (entry.proc.exitCode === null) entry.proc.kill('SIGKILL')
     }, 3000)
   }
+}
+
+// --- Serve frontend static files ---
+const distPath = join(__dirname, '..', 'frontend', 'dist')
+if (existsSync(distPath)) {
+  app.use(express.static(distPath))
+  app.get('/{*path}', (_req, res) => {
+    res.sendFile(join(distPath, 'index.html'))
+  })
 }
 
 // --- HTTP + WebSocket ---

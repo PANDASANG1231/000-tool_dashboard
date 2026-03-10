@@ -10,7 +10,11 @@
       "Bash(/bin/sleep 2)",
       "Bash(/bin/cat /private/tmp/claude-503/-Users-pandasang-Desktop-workspace-000-tool-dashboard/tasks/b5uas0bx3.output)",
       "Bash(export PATH=\"/usr/local/bin:$PATH\")",
-      "Bash(npx vite --port 5173)"
+      "Bash(npx vite --port 5173)",
+      "Bash(launchctl stop com.pandasang.tool-dashboard)",
+      "Bash(launchctl list)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
