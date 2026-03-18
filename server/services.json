@@ -1,8 +1,17 @@
 {
   "groups": [
-    { "id": "mcp", "name": "MCP 服务" },
-    { "id": "docker", "name": "Docker 容器" },
-    { "id": "local", "name": "本地工具" }
+    {
+      "id": "mcp",
+      "name": "MCP 服务"
+    },
+    {
+      "id": "docker",
+      "name": "Docker 容器"
+    },
+    {
+      "id": "local",
+      "name": "本地工具"
+    }
   ],
   "services": [
     {
@@ -44,6 +53,31 @@
       "env": {},
       "port": null,
       "frontendUrl": null
+    },
+    {
+      "id": "daycare-tracker",
+      "name": "Daycare Email Tracker",
+      "group": "local",
+      "command": "python3 -m http.server 8502",
+      "workDir": "/Users/pandasang/Desktop/toolkit/20260311_email_to_daycare",
+      "env": {},
+      "port": 8502,
+      "frontendUrl": "http://localhost:8502"
+    },
+    {
+      "id": "litellm-proxy",
+      "name": "LiteLLM Proxy",
+      "group": "local",
+      "command": "litellm --config config.yaml --port 8080",
+      "workDir": "/Users/pandasang/Desktop/toolkit/20260313_litellm_cheaper_token",
+      "env": {
+        "ANTHROPIC_API_KEY": "$ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY": "$OPENAI_API_KEY",
+        "DEEPSEEK_API_KEY": "$DEEPSEEK_API_KEY",
+        "LOG_LEVEL": "info"
+      },
+      "port": 8080,
+      "frontendUrl": "http://localhost:8080"
     }
   ]
 }
