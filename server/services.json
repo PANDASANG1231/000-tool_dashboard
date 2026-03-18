@@ -68,7 +68,7 @@
       "id": "litellm-proxy",
       "name": "LiteLLM Proxy",
       "group": "local",
-      "command": "litellm --config config.yaml --port 8080",
+      "command": "litellm --config config.yaml --port 4000",
       "workDir": "/Users/pandasang/Desktop/toolkit/20260313_litellm_cheaper_token",
       "env": {
         "ANTHROPIC_API_KEY": "$ANTHROPIC_API_KEY",
@@ -76,8 +76,8 @@
         "DEEPSEEK_API_KEY": "$DEEPSEEK_API_KEY",
         "LOG_LEVEL": "info"
       },
-      "port": 8080,
-      "frontendUrl": "http://localhost:8080"
+      "port": 4000,
+      "frontendUrl": "http://localhost:4000"
     }
   ]
 }
