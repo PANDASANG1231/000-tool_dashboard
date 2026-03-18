@@ -240,6 +240,16 @@ app.post('/api/services/:id/stop', (req, res) => {
 
 function stopProcess(id, svc) {
   const entry = processes.get(id)
+
+  // Custom stop command takes priority
+  if (svc && svc.stopCommand) {
+    try {
+      execSync(svc.stopCommand, { cwd: svc.workDir || undefined, timeout: 30000, env: shellEnv, stdio: 'ignore' })
+    } catch { /* ignore */ }
+    if (entry) processes.delete(id)
+    return
+  }
+
   if (!entry) return
   // External docker containers: use docker compose stop
   if (entry.externalPid === -1 && svc && svc.workDir) {
