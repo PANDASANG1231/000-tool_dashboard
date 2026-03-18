@@ -75,6 +75,7 @@
       "group": "local",
       "command": "bash switch.sh deepseek",
       "stopCommand": "bash switch.sh default",
+      "statusCommand": "bash switch.sh status",
       "workDir": "/Users/pandasang/Desktop/toolkit/20260313_litellm_cheaper_token",
       "env": {},
       "port": 4000,

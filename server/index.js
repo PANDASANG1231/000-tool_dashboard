@@ -10,7 +10,7 @@ import { dirname, join } from 'path'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const DATA_FILE = join(__dirname, 'services.json')
 const PORT = 3456
-const EXTENDED_PATH = `/opt/homebrew/bin:/usr/local/bin:${process.env.PATH}`
+const EXTENDED_PATH = `/opt/homebrew/bin:/usr/local/bin:${process.env.HOME}/.local/bin:${process.env.PATH}`
 const shellEnv = { ...process.env, PATH: EXTENDED_PATH }
 
 // --- State ---
@@ -226,6 +226,21 @@ app.post('/api/services/:id/start', async (req, res) => {
 
   processes.set(svc.id, { proc, logs })
   broadcast({ type: 'status', id: svc.id, status: 'running' })
+
+  // Run statusCommand after startup and push output to logs
+  if (svc.statusCommand) {
+    setTimeout(() => {
+      try {
+        const statusOut = execSync(svc.statusCommand, {
+          cwd: svc.workDir || undefined, timeout: 10000, env: shellEnv, encoding: 'utf-8',
+        })
+        pushLog(`\n[Status] ${statusOut.trim()}\n`)
+      } catch (e) {
+        pushLog(`\n[Status] ${e.message}\n`)
+      }
+    }, 3000)
+  }
+
   res.json({ status: 'running' })
 })
 
