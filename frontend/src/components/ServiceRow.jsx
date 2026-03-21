@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
-export default function ServiceRow({ service, onStart, onStop }) {
+export default function ServiceRow({ service, onStart, onStop, onRestart }) {
   const [showLogs, setShowLogs] = useState(false)
   const logRef = useRef(null)
   const running = service.status === 'running'
@@ -66,13 +66,22 @@ export default function ServiceRow({ service, onStart, onStop }) {
         <td className="py-3 px-4">
           <div className="flex items-center gap-1 whitespace-nowrap">
             {running ? (
-              <button
-                onClick={() => onStop(service.id)}
-                className="flex items-center justify-center gap-1 w-[60px] py-1 text-[11px] font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-md transition-all cursor-pointer"
-              >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1" /></svg>
-                停止
-              </button>
+              <>
+                <button
+                  onClick={() => onStop(service.id)}
+                  className="flex items-center justify-center gap-1 w-[60px] py-1 text-[11px] font-medium bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-md transition-all cursor-pointer"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1" /></svg>
+                  停止
+                </button>
+                <button
+                  onClick={() => onRestart(service.id)}
+                  className="flex items-center justify-center gap-1 w-[60px] py-1 text-[11px] font-medium bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 rounded-md transition-all cursor-pointer"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+                  重启
+                </button>
+              </>
             ) : starting ? (
               <button
                 disabled

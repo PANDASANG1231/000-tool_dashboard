@@ -60,9 +60,12 @@ function detectExternalProcess(svc) {
       }).trim()
       if (out) return { containerIds: out.split('\n') }
     } else {
-      // For regular processes: extract the main binary and pgrep for it
+      // For regular processes: find the most specific binary in the command
       const cmd = svc.command.split('&&').pop().trim().split('|').pop().trim()
-      const binary = cmd.split(/\s+/)[0].replace(/^\.\//, '')
+      const tokens = cmd.split(/\s+/).map((t) => t.replace(/^\.\//, '')).filter(Boolean)
+      // Skip generic wrappers (script, env, bash, sh, etc.) and use the first meaningful token
+      const wrappers = new Set(['script', 'env', 'bash', 'sh', 'zsh', 'nohup', 'caffeinate', 'unbuffer'])
+      const binary = tokens.find((t) => !t.startsWith('-') && !t.startsWith('/dev/') && !wrappers.has(t)) || tokens[0]
       if (!binary) return null
       const pid = execSync(`pgrep -f "${binary}"`, {
         encoding: 'utf-8', timeout: 3000, env: shellEnv, stdio: ['pipe', 'pipe', 'pipe'],
@@ -244,6 +247,55 @@ app.post('/api/services/:id/start', async (req, res) => {
   res.json({ status: 'running' })
 })
 
+// Restart service
+app.post('/api/services/:id/restart', async (req, res) => {
+  const data = loadData()
+  const svc = data.services.find((s) => s.id === req.params.id)
+  if (!svc) return res.status(404).json({ error: 'not found' })
+
+  stopProcess(req.params.id, svc)
+  broadcast({ type: 'status', id: req.params.id, status: 'starting' })
+
+  // Wait briefly for process to fully stop
+  await new Promise((r) => setTimeout(r, 1000))
+
+  const logs = processes.get(req.params.id)?.logs ?? []
+  logs.push('\n[Restarting...]\n')
+  const pushLog = (data) => {
+    const line = typeof data === 'string' ? data : data.toString()
+    logs.push(line)
+    if (logs.length > 500) logs.shift()
+    broadcast({ type: 'log', id: svc.id, line })
+  }
+
+  if (isDockerService(svc)) {
+    const ok = await ensureDocker(pushLog)
+    if (!ok) {
+      broadcast({ type: 'status', id: svc.id, status: 'stopped' })
+      return res.json({ status: 'stopped', error: 'Docker failed to start' })
+    }
+  }
+
+  const cmd = svc.command.includes('\n')
+    ? svc.command.split('\n').map(l => l.trim()).filter(Boolean).join(' && ')
+    : svc.command
+  const proc = spawn(cmd, {
+    shell: true,
+    cwd: svc.workDir || undefined,
+    env: { ...process.env, PATH: EXTENDED_PATH, ...(svc.env || {}) },
+  })
+  proc.stdout.on('data', pushLog)
+  proc.stderr.on('data', pushLog)
+  proc.on('close', (code) => {
+    pushLog(`\n[Process exited with code ${code}]\n`)
+    broadcast({ type: 'status', id: svc.id, status: 'stopped' })
+  })
+
+  processes.set(svc.id, { proc, logs })
+  broadcast({ type: 'status', id: svc.id, status: 'running' })
+  res.json({ status: 'running' })
+})
+
 // Stop service
 app.post('/api/services/:id/stop', (req, res) => {
   const data = loadData()
@@ -312,4 +364,43 @@ wss.on('connection', (ws) => {
 
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
+
+  // Auto-start services marked with autoStart: true
+  const data = loadData()
+  const autoStartServices = data.services.filter((svc) => svc.autoStart)
+  if (autoStartServices.length > 0) {
+    console.log(`Auto-starting ${autoStartServices.length} service(s)...`)
+    for (const svc of autoStartServices) {
+      // Skip if already running externally
+      const ext = detectExternalProcess(svc)
+      if (ext) {
+        console.log(`[autoStart] ${svc.name} already running, skipping`)
+        continue
+      }
+      console.log(`[autoStart] Starting ${svc.name}`)
+      const logs = []
+      const pushLog = (data) => {
+        const line = typeof data === 'string' ? data : data.toString()
+        logs.push(line)
+        if (logs.length > 500) logs.shift()
+        broadcast({ type: 'log', id: svc.id, line })
+      }
+      const cmd = svc.command.includes('\n')
+        ? svc.command.split('\n').map((l) => l.trim()).filter(Boolean).join(' && ')
+        : svc.command
+      const proc = spawn(cmd, {
+        shell: true,
+        cwd: svc.workDir || undefined,
+        env: { ...process.env, PATH: EXTENDED_PATH, ...(svc.env || {}) },
+      })
+      proc.stdout.on('data', pushLog)
+      proc.stderr.on('data', pushLog)
+      proc.on('close', (code) => {
+        pushLog(`\n[Process exited with code ${code}]\n`)
+        broadcast({ type: 'status', id: svc.id, status: 'stopped' })
+      })
+      processes.set(svc.id, { proc, logs })
+      broadcast({ type: 'status', id: svc.id, status: 'running' })
+    }
+  }
 })

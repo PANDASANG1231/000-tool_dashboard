@@ -5,7 +5,7 @@ import ConfigPage from './pages/ConfigPage'
 
 export default function App() {
   const [page, setPage] = useState('console')
-  const { services, groups, loading, refresh, start, stop, setGroups } = useServices()
+  const { services, groups, loading, refresh, start, stop, restart, setGroups } = useServices()
 
   if (loading) {
     return (
@@ -66,7 +66,7 @@ export default function App() {
       {/* Content */}
       <main className="max-w-6xl mx-auto px-8 py-8">
         {page === 'console' ? (
-          <ConsolePage services={services} groups={groups} start={start} stop={stop} />
+          <ConsolePage services={services} groups={groups} start={start} stop={stop} restart={restart} />
         ) : (
           <ConfigPage services={services} groups={groups} refresh={refresh} setGroups={setGroups} />
         )}

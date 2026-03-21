@@ -46,5 +46,10 @@ export function useServices() {
     setServices((prev) => prev.map((s) => (s.id === id ? { ...s, status: 'stopped' } : s)))
   }
 
-  return { services, groups, loading, refresh, start, stop, setGroups }
+  const restart = async (id) => {
+    setServices((prev) => prev.map((s) => (s.id === id ? { ...s, status: 'starting' } : s)))
+    await api.restartService(id)
+  }
+
+  return { services, groups, loading, refresh, start, stop, restart, setGroups }
 }

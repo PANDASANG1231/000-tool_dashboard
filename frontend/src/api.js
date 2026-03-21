@@ -15,6 +15,7 @@ export const api = {
   deleteService: (id) => request(`/services/${id}`, { method: 'DELETE' }),
   startService: (id) => request(`/services/${id}/start`, { method: 'POST' }),
   stopService: (id) => request(`/services/${id}/stop`, { method: 'POST' }),
+  restartService: (id) => request(`/services/${id}/restart`, { method: 'POST' }),
   updateGroups: (groups) => request('/groups', { method: 'PUT', body: JSON.stringify({ groups }) }),
 }
 

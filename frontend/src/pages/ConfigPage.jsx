@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { api } from '../api'
 
-const empty = { name: '', group: '', command: '', workDir: '', env: {}, port: '', frontendUrl: '' }
+const empty = { name: '', group: '', command: '', workDir: '', env: {}, port: '', frontendUrl: '', autoStart: false }
 
 export default function ConfigPage({ services, groups, refresh, setGroups }) {
   const [editing, setEditing] = useState(null)
@@ -23,6 +23,7 @@ export default function ConfigPage({ services, groups, refresh, setGroups }) {
       workDir: svc.workDir || '',
       port: svc.port || '',
       frontendUrl: svc.frontendUrl || '',
+      autoStart: svc.autoStart || false,
     })
     setEnvText(
       Object.entries(svc.env || {})
@@ -47,6 +48,7 @@ export default function ConfigPage({ services, groups, refresh, setGroups }) {
       port: form.port ? Number(form.port) : null,
       frontendUrl: form.frontendUrl || null,
       env: parseEnv(envText),
+      autoStart: form.autoStart,
     }
     if (editing === 'new') {
       await api.createService(payload)
@@ -147,6 +149,11 @@ export default function ConfigPage({ services, groups, refresh, setGroups }) {
                     <span className="px-1.5 py-0.5 rounded text-[10px] text-slate-500 bg-surface-2 border border-border">
                       {groups.find(g => g.id === svc.group)?.name || '未分组'}
                     </span>
+                    {svc.autoStart && (
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium text-amber-400/80 bg-amber-500/10 border border-amber-500/20">
+                        自启
+                      </span>
+                    )}
                   </div>
                   <code className="text-[11px] text-slate-500 font-mono block truncate mt-0.5">{svc.command}</code>
                 </div>
@@ -241,6 +248,19 @@ export default function ConfigPage({ services, groups, refresh, setGroups }) {
                   placeholder={"KEY=VALUE\nNODE_ENV=development"}
                 />
                 <p className="text-[11px] text-slate-600 mt-1">每行一个，格式: KEY=VALUE</p>
+              </div>
+              <div className="flex items-center justify-between py-2">
+                <div>
+                  <p className="text-xs font-medium text-slate-400">自动启动</p>
+                  <p className="text-[11px] text-slate-600 mt-0.5">Dashboard 启动时自动运行此服务</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, autoStart: !form.autoStart })}
+                  className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${form.autoStart ? 'bg-amber-500/70' : 'bg-surface-3 border border-border'}`}
+                >
+                  <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${form.autoStart ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                </button>
               </div>
             </div>
 

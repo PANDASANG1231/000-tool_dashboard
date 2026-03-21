@@ -1,6 +1,6 @@
 import ServiceRow from '../components/ServiceRow'
 
-export default function ConsolePage({ services, groups, start, stop }) {
+export default function ConsolePage({ services, groups, start, stop, restart }) {
   const grouped = groups.map((g) => ({
     ...g,
     items: services.filter((s) => s.group === g.id),
@@ -14,7 +14,7 @@ export default function ConsolePage({ services, groups, start, stop }) {
           g.items.length > 0 && (
             <section key={g.id}>
               <GroupHeader name={g.name} count={g.items.length} running={g.items.filter(s => s.status === 'running').length} />
-              <ServiceTable services={g.items} onStart={start} onStop={stop} />
+              <ServiceTable services={g.items} onStart={start} onStop={stop} onRestart={restart} />
             </section>
           )
       )}
@@ -22,7 +22,7 @@ export default function ConsolePage({ services, groups, start, stop }) {
       {ungrouped.length > 0 && (
         <section>
           <GroupHeader name="未分组" count={ungrouped.length} running={ungrouped.filter(s => s.status === 'running').length} />
-          <ServiceTable services={ungrouped} onStart={start} onStop={stop} />
+          <ServiceTable services={ungrouped} onStart={start} onStop={stop} onRestart={restart} />
         </section>
       )}
 
@@ -43,7 +43,7 @@ export default function ConsolePage({ services, groups, start, stop }) {
   )
 }
 
-function ServiceTable({ services, onStart, onStop }) {
+function ServiceTable({ services, onStart, onStop, onRestart }) {
   return (
     <div className="rounded-xl border border-border overflow-hidden bg-surface-1/30">
       <table className="w-full table-fixed">
@@ -65,7 +65,7 @@ function ServiceTable({ services, onStart, onStop }) {
         </thead>
         <tbody>
           {services.map((svc) => (
-            <ServiceRow key={svc.id} service={svc} onStart={onStart} onStop={onStop} />
+            <ServiceRow key={svc.id} service={svc} onStart={onStart} onStop={onStop} onRestart={onRestart} />
           ))}
         </tbody>
       </table>
